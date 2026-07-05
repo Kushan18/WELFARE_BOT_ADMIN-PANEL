@@ -68,7 +68,7 @@ export default function AdminDashboard({ adminKey: propAdminKey, onExit }) {
     }, 2800);
   };
 
-  const API = '';
+  const API = import.meta.env.VITE_API_URL || '';
   const headers = adminKey ? { 'X-Admin-API-Key': adminKey.trim() } : {};
 
   useEffect(() => {
