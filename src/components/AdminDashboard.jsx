@@ -3,9 +3,11 @@ import axios from 'axios';
 import './AdminDashboard.css';
 
 export default function AdminDashboard({ adminKey: propAdminKey, onExit }) {
+  const envKey = import.meta.env.VITE_ADMIN_API_KEY || '';
   const storedKey = localStorage.getItem('adminKey') || '';
-  const [adminKey, setAdminKey] = useState(propAdminKey || storedKey);
-  const [keyPrompt, setKeyPrompt] = useState(!propAdminKey && !storedKey);
+  
+  const [adminKey, setAdminKey] = useState(propAdminKey || envKey || storedKey);
+  const [keyPrompt, setKeyPrompt] = useState(!propAdminKey && !envKey && !storedKey);
   const [tempKey, setTempKey] = useState('');
 
   const [activeTab, setActiveTab] = useState('analytics');
