@@ -3,11 +3,8 @@ import axios from 'axios';
 import './AdminDashboard.css';
 
 export default function AdminDashboard({ adminKey: propAdminKey, onExit }) {
-  const envKey = import.meta.env.VITE_ADMIN_API_KEY || '';
-  const storedKey = localStorage.getItem('adminKey') || '';
-  
-  const [adminKey, setAdminKey] = useState(propAdminKey || envKey || storedKey);
-  const [keyPrompt, setKeyPrompt] = useState(!propAdminKey && !envKey && !storedKey);
+  const [adminKey, setAdminKey] = useState(propAdminKey || '');
+  const [keyPrompt, setKeyPrompt] = useState(!propAdminKey);
   const [tempKey, setTempKey] = useState('');
 
   const [activeTab, setActiveTab] = useState('analytics');
@@ -76,7 +73,6 @@ export default function AdminDashboard({ adminKey: propAdminKey, onExit }) {
   useEffect(() => {
     if (adminKey) {
       setKeyPrompt(false);
-      localStorage.setItem('adminKey', adminKey);
       
       if (!loginRecorded) {
         axios.post(API + '/admin/login', {}, { headers: { 'X-Admin-API-Key': adminKey.trim() } })
@@ -86,7 +82,6 @@ export default function AdminDashboard({ adminKey: propAdminKey, onExit }) {
 
       fetchTabData(activeTab, false);
     } else {
-      localStorage.removeItem('adminKey');
       setLoginRecorded(false);
     }
   }, [adminKey, activeTab, loginRecorded]);
@@ -503,21 +498,22 @@ const handleHardDeleteScheme = async (scheme) => {
 
   if (keyPrompt) {
     return (
-      <div className='admin-root' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
-        <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', textAlign: 'center', minWidth: '350px' }}>
-          <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'center' }}>
-             <svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#4f46e5' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-             </svg>
+      <div className='login-container'>
+        <div className='login-card'>
+          <div className='login-icon-wrapper'>
+            <svg width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <rect x='3' y='11' width='18' height='11' rx='2' ry='2'></rect>
+              <path d='M7 11V7a5 5 0 0 1 10 0v4'></path>
+            </svg>
           </div>
-          <h2 style={{ marginBottom: '24px', color: '#1f2937', fontSize: '24px', fontWeight: '600' }}>Admin Login</h2>
-          <input
-            type='password'
-            placeholder='Enter Admin API Key'
-            value={tempKey}
+          <h2 className='login-title'>Admin Access Required</h2>
+          <p className='login-subtitle'>Please enter your secret API key to continue securely.</p>
+          <input 
+            type="password" 
+            className='login-input'
+            placeholder="Enter Admin API Key..." 
+            value={tempKey} 
             onChange={(e) => setTempKey(e.target.value)}
-            style={{ width: '100%', padding: '12px', marginBottom: '20px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '16px', boxSizing: 'border-box' }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 setAdminKey(tempKey);
@@ -526,12 +522,16 @@ const handleHardDeleteScheme = async (scheme) => {
             autoFocus
           />
           <button 
+            className='login-button'
             onClick={() => setAdminKey(tempKey)} 
-            style={{ width: '100%', padding: '12px', backgroundColor: '#4f46e5', color: 'white', border: 'none', borderRadius: '6px', fontSize: '16px', cursor: 'pointer', fontWeight: '500' }}
           >
             Secure Access
+            <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <line x1='5' y1='12' x2='19' y2='12'></line>
+              <polyline points='12 5 19 12 12 19'></polyline>
+            </svg>
           </button>
-          {error && <div style={{ color: '#ef4444', marginTop: '16px', fontSize: '14px' }}>{error}</div>}
+          {error && <div className='login-error'>{error}</div>}
         </div>
       </div>
     );
