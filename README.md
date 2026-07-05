@@ -1,16 +1,51 @@
-# React + Vite
+# WelfareBot Admin Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This is the private Admin Dashboard for the WelfareBot system, built with React and Vite. It is completely decoupled from the main public chatbot to ensure maximum security.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-## React Compiler
+### 2. Run the Development Server
+```bash
+npm run dev
+```
+The app will be available at `http://localhost:5173`. 
+*Note: Make sure your FastAPI backend is running on port 8000 so the admin panel can connect to the API.*
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Production Deployment (Render)
 
-## Expanding the Oxlint configuration
+Because this is a static React application, you can deploy it on Render as a **Static Site** (which is completely free and highly optimized).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### Step-by-Step Render Setup
+
+1. **Create a New Static Site**:
+   - Log in to your [Render Dashboard](https://dashboard.render.com).
+   - Click **New +** and select **Static Site**.
+   - Connect your GitHub repository (`WELFARE_BOT_ADMIN-PANEL`).
+
+2. **Configure the Service Settings**:
+   - **Name**: `welfarebot-admin`
+   - **Branch**: `main`
+   - **Build Command**: 
+     ```bash
+     npm install && npm run build
+     ```
+   - **Publish Directory**: 
+     ```text
+     dist
+     ```
+
+3. **Advanced Settings (Rewrites)**:
+   Because this is a Single Page Application (SPA) using React Router, you must add a rewrite rule so direct links work properly:
+   - Click **Advanced**
+   - Under **Redirects/Rewrites**, add a rule:
+     - **Source**: `/*`
+     - **Destination**: `/index.html`
+     - **Action**: `Rewrite`
+
+4. **Deploy**:
+   Click **Create Static Site**. Render will build the Vite app and serve it globally!
